@@ -1,0 +1,344 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1b3b20a3-052e-4726-8959-a19982d25717",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1CpEfWiojnnhNAUrPLjlEG5O7aQ2bGoKhtZmjY-vM2mM",
+          "mode": "list",
+          "cachedResultName": "entreprises_sarl_casablanca_updated",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CpEfWiojnnhNAUrPLjlEG5O7aQ2bGoKhtZmjY-vM2mM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1693441345,
+          "mode": "list",
+          "cachedResultName": "Entreprises SARL Casablanca",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CpEfWiojnnhNAUrPLjlEG5O7aQ2bGoKhtZmjY-vM2mM/edit#gid=1693441345"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "5c937e81-95ce-4f53-8308-a0e974f885c2",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FzdMaqo7UrTGScjh",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json[\"Email\"] }}",
+        "subject": "Démo gratuite 7 jours – Devis App",
+        "message": "=Bonjour {{ $json[\"Nom de l'Entreprise\"] }},<br><br>  Je vous contacte pour vous présenter <b>Devis App</b>, une solution qui permet de créer des devis rapidement avec une démo gratuite de 7 jours.<br><br>  ✔ Gain de temps<br> ✔ Devis en quelques secondes<br> ✔ Simple à utiliser<br><br>  Je propose également la création de sites web professionnels (landing pages).<br><br>  Si cela vous intéresse, je peux vous envoyer une démo.<br><br>  Cordialement,<br> Salaheddine Baha",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        832,
+        0
+      ],
+      "id": "63a1b37f-2fcf-4d20-b657-3647ed6aebe2",
+      "name": "Send a message",
+      "webhookId": "644b1f73-af02-4963-b5f9-17efbf03388e",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "k5FywMr1fWH0K3UL",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 2,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        624,
+        0
+      ],
+      "id": "593d90c4-006c-4b72-bacb-00ac1920d5ed",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9cb6a76d-5b61-45c1-9dff-ab26422a5600",
+              "leftValue": "={{ $json[\"Email\"] }}",
+              "rightValue": "is not empty",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "b0c18321-79d6-4291-b80c-fc23e6475b07",
+              "leftValue": "={{ $json[\"Statut\"] }}",
+              "rightValue": "En attente",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "440e03db-bc39-4e84-8928-76344a47a28b",
+              "leftValue": "={{ $json[\"Email\"] }}",
+              "rightValue": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "182709fe-53b8-4200-8189-dca443b71803",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1CpEfWiojnnhNAUrPLjlEG5O7aQ2bGoKhtZmjY-vM2mM",
+          "mode": "list",
+          "cachedResultName": "entreprises_sarl_casablanca_updated",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CpEfWiojnnhNAUrPLjlEG5O7aQ2bGoKhtZmjY-vM2mM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1693441345,
+          "mode": "list",
+          "cachedResultName": "Entreprises SARL Casablanca",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CpEfWiojnnhNAUrPLjlEG5O7aQ2bGoKhtZmjY-vM2mM/edit#gid=1693441345"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('If').item.json.row_number }}",
+            "Statut": "Envoyé"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "#",
+              "displayName": "#",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Nom de l'Entreprise",
+              "displayName": "Nom de l'Entreprise",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Téléphone",
+              "displayName": "Téléphone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Secteur",
+              "displayName": "Secteur",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Statut",
+              "displayName": "Statut",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "cf14f249-c530-482b-b650-70413c7eb0e2",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FzdMaqo7UrTGScjh",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9f9c4562-5423-4696-9b0d-ffc631f45eef",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "af4ad1d2e8db0e7860962693d015f67eaafd23321b04447ef3ca2cb63e1e760c"
+  },
+  "id": "h6O40QC6P38y9hVD",
+  "tags": []
+}
