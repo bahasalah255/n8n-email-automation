@@ -2,31 +2,20 @@
   "name": "My workflow",
   "nodes": [
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        0,
-        0
-      ],
-      "id": "1b3b20a3-052e-4726-8959-a19982d25717",
-      "name": "When clicking ‘Execute workflow’"
-    },
-    {
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "1CpEfWiojnnhNAUrPLjlEG5O7aQ2bGoKhtZmjY-vM2mM",
+          "value": "1fd-8PtB20AA3_hCmbKloZs5mpg4ZwGeILqn6QvP2z6s",
           "mode": "list",
-          "cachedResultName": "entreprises_sarl_casablanca_updated",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CpEfWiojnnhNAUrPLjlEG5O7aQ2bGoKhtZmjY-vM2mM/edit?usp=drivesdk"
+          "cachedResultName": "entreprises_sarl_casablanca_enriched",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1fd-8PtB20AA3_hCmbKloZs5mpg4ZwGeILqn6QvP2z6s/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
-          "value": 1693441345,
+          "value": 606604592,
           "mode": "list",
           "cachedResultName": "Entreprises SARL Casablanca",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CpEfWiojnnhNAUrPLjlEG5O7aQ2bGoKhtZmjY-vM2mM/edit#gid=1693441345"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1fd-8PtB20AA3_hCmbKloZs5mpg4ZwGeILqn6QvP2z6s/edit#gid=606604592"
         },
         "options": {}
       },
@@ -67,20 +56,6 @@
           "name": "Gmail OAuth2 API"
         }
       }
-    },
-    {
-      "parameters": {
-        "batchSize": 2,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        624,
-        0
-      ],
-      "id": "593d90c4-006c-4b72-bacb-00ac1920d5ed",
-      "name": "Loop Over Items"
     },
     {
       "parameters": {
@@ -252,7 +227,7 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1040,
+        1248,
         0
       ],
       "id": "cf14f249-c530-482b-b650-70413c7eb0e2",
@@ -263,21 +238,55 @@
           "name": "Google Sheets OAuth2 API"
         }
       }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "dddc94d4-3e9b-49b3-b79a-8111c29bb42e",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "batchSize": 5,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        624,
+        0
+      ],
+      "id": "593d90c4-006c-4b72-bacb-00ac1920d5ed",
+      "name": "Split in Batches"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "378de792-2ff4-4d9f-9ed4-f6201aa93e18",
+      "name": "Wait",
+      "webhookId": "4786f5dd-770e-4fe5-a2a2-0c7e8a3f70e1"
     }
   ],
   "pinData": {},
   "connections": {
-    "When clicking ‘Execute workflow’": {
-      "main": [
-        [
-          {
-            "node": "Get row(s) in sheet",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Get row(s) in sheet": {
       "main": [
         [
@@ -289,7 +298,45 @@
         ]
       ]
     },
-    "Loop Over Items": {
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Split in Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split in Batches": {
       "main": [
         [],
         [
@@ -301,7 +348,7 @@
         ]
       ]
     },
-    "Send a message": {
+    "Wait": {
       "main": [
         [
           {
@@ -311,30 +358,14 @@
           }
         ]
       ]
-    },
-    "If": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Update row in sheet": {
-      "main": [
-        []
-      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "9f9c4562-5423-4696-9b0d-ffc631f45eef",
+  "versionId": "ad71cd4a-e5d0-46ab-a300-358cb482d283",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "af4ad1d2e8db0e7860962693d015f67eaafd23321b04447ef3ca2cb63e1e760c"
